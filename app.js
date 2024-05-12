@@ -23,14 +23,16 @@ function checkValidEmail(value) {
 }
 
 // get status of email validity
-app.get("/contact/:email", async (req, res) => {
+app.post("/contact-us/response", async (req, res) => {
     try {
-        const { email } = req.params;
+        const email = req.body.userEmail;
         const response = await fetch(`https://api.proofy.io/verifyaddr?aid=${userId}&key=${apiKey}&email=${email}`);
         const cid = await response.json();
         const numOfCid = cid["cid"];
         const resultResponse = await fetch(`https://api.proofy.io/getresult?aid=${userId}&key=${apiKey}&cid=${numOfCid}`);
+        console.log(resultResponse)
         const checkResults = await resultResponse.json();
+        console.log(checkResults)
         const outcome = checkResults.result[0].status;
         res.json(checkValidEmail(outcome));
     } catch (error) {
